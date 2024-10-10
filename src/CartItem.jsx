@@ -2,38 +2,58 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { removeItem, updateQuantity } from './CartSlice';
+import { countElements, removeItem, updateQuantity } from './CartSlice';
+//import {ProductList} from './ProductList';
 import './CartItem.css';
 
 const CartItem = ({ onContinueShopping }) => {
+
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
 
   // Calculate total amount for all products in the cart
+  
   const calculateTotalAmount = () => {
- 
+    var cartTotal = 0;
+    cart.forEach((item) => {
+      cartTotal = cartTotal + calculateTotalCost(item); 
+    });
+    return cartTotal;
   };
 
   const handleContinueShopping = (e) => {
-   
-  };
-
-
-
-  const handleIncrement = (item) => {
     
   };
 
+  const handleCheckoutShopping = (e) => {
+    alert('Functionality to be added for future reference');
+  };
+
+  const handleIncrement = (item) => {
+    const payload = {name:item.name, quantity:item.quantity+1}
+    dispatch(updateQuantity(payload));
+    dispatch(countElements({}));     
+  };
+
   const handleDecrement = (item) => {
-   
+    if (item.quantity > 0) {
+      const payload = {name:item.name, quantity:item.quantity-1}
+      dispatch(updateQuantity(payload));
+      dispatch(countElements({}));
+    }
   };
 
   const handleRemove = (item) => {
-
+    dispatch(removeItem(item.name));
+    dispatch(countElements({}));
   };
 
   // Calculate total cost based on quantity for an item
   const calculateTotalCost = (item) => {
+    const costDollardStr = item.cost;
+    const costStr = costDollardStr.substring(1);
+    const costFloat = parseFloat(costStr);
+    return item.quantity * costFloat; 
   };
 
   return (
